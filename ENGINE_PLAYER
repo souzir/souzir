@@ -1,0 +1,115 @@
+import pygame
+
+Screen_Width = 2000
+Screen_Height = 1500
+
+# НАШ ГЕРОЙ
+class Hero:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.speed = 7
+        self.height = 100
+        self.width = 100
+
+        # Загрузка героя 
+        self.frames_right = [pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_00.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_01.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_02.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_03.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_04.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_05.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_06.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_07.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_08.png"),
+            pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\R_09.png")
+            ]
+        self.frames_left = [pygame.transform.flip(frame, True, False) for frame in self.frames_right]
+        self.frames_up =[pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_00.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_01.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_02.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_03.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_04.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_05.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_06.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_07.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_00.png"),
+                         pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\UP_01.png"),
+                         ]
+        self.frames_down = [pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_00.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_01.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_02.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_03.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_04.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_05.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_06.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_07.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_00.png"),
+                           pygame.image.load(r"C:\Users\Thunderobot\OneDrive\Рабочий стол\IMPORTANT\GAME\RESOURCES\Images\DW_01.png"),
+                           ]
+        
+        
+        
+        
+        self.anim_speed = 15
+        self.frame_counter = 0
+        self.current_frame = 0
+        self.image = self.frames_right[self.current_frame]
+        self.is_moving_right = False
+        self.is_moving_left = False
+        self.is_moving_up = False
+        self.is_moving_down = False
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def update_anim(self):
+        if self.is_moving_left or self.is_moving_right or self.is_moving_up or self.is_moving_down:
+            self.frame_counter += 1
+            if self.frame_counter >= self.anim_speed:
+                self.frame_counter = 0
+                self.current_frame = (self.current_frame + 1) % len(self.frames_right)
+
+                if self.is_moving_right:
+                    self.image = self.frames_right[self.current_frame % len(self.frames_right)]
+                elif self.is_moving_left:
+                    self.image = self.frames_left[self.current_frame % len(self.frames_left)]
+                elif self.is_moving_up:
+                    self.image = self.frames_up[self.current_frame % len(self.frames_up)]
+                elif self.is_moving_down:
+                    self.image = self.frames_down[self.current_frame % len(self.frames_down)]
+
+
+
+
+                if self.is_moving_right:
+                    self.image = self.frames_right[self.current_frame]
+                elif self.is_moving_left:
+                    self.image = self.frames_left[self.current_frame]
+                elif self.is_moving_up:
+                    self.image = self.frames_up[self.current_frame]
+                elif self.is_moving_down:
+                    self.image = self.frames_down[self.current_frame]
+
+    def draw(self, screen):
+        # Отрисовка текущего кадра
+        screen.blit(self.image, (self.x, self.y))
+
+    def move(self, keys):
+        self.is_moving_right = False
+        self.is_moving_left = False
+        self.is_moving_up = False
+        self.is_moving_down = False
+
+        if keys[pygame.K_a] and self.x > 0:
+            self.x -= self.speed
+            self.is_moving_left = True
+        elif keys[pygame.K_d] and self.x < Screen_Width - self.width:
+            self.x += self.speed
+            self.is_moving_right = True
+
+        if keys[pygame.K_w] and self.y > 0:
+            self.y -= self.speed
+            self.is_moving_up = True
+        elif keys[pygame.K_s] and self.y < Screen_Height - self.height:
+            self.y += self.speed
+            self.is_moving_down = True
